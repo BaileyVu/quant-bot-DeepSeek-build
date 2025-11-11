@@ -1,0 +1,1 @@
+"""quantbot package module."""
