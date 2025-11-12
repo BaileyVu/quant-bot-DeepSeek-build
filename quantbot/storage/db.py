@@ -5,7 +5,7 @@ import json
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Generator, Optional
+from typing import Generator
 
 try:
     from sqlalchemy import JSON, Column, DateTime, Float, Integer, String, create_engine
@@ -34,13 +34,13 @@ except ModuleNotFoundError:  # pragma: no cover - optional dependency
 else:
     SQLALCHEMY_AVAILABLE = True
 
-from ..config import get_settings
+from ..config import get_config
 
 Base = declarative_base()
 
 
 def _engine_url() -> str:
-    return get_settings().db_url
+    return get_config().storage.url
 
 
 def _engine():

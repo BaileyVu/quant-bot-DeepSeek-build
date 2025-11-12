@@ -1,0 +1,36 @@
+environment = "dev"
+
+[runtime]
+mode = "paper"
+exchange = "binance"
+primary_symbol = "BTCUSDT"
+symbols = ["BTCUSDT"]
+bar_interval = "1m"
+funding_interval_minutes = 480
+
+[risk]
+max_daily_loss = 0.05
+max_drawdown = 0.3
+max_order_notional = 25000
+max_leverage = 2
+max_open_positions = 3
+
+[data]
+data_dir = "./data"
+aggregation = "1m"
+
+[api]
+request_timeout = 5.0
+max_retries = 2
+retry_backoff_seconds = 0.5
+rate_limit = { requests_per_minute = 900, burst = 150 }
+
+[fees]
+maker_bps = 0.02
+taker_bps = 0.05
+
+[logging]
+level = "INFO"
+
+[storage]
+url = "sqlite:///./quantbot.db"

@@ -8,7 +8,7 @@ from typing import Deque
 import numpy as np
 
 from .base import Strategy, Target
-from ..data.normalizer import MarketState
+from ..data import MarketState
 
 
 def _ewm(values: np.ndarray, span: int) -> np.ndarray:

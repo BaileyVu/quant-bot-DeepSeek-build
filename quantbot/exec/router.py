@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .broker import Broker, Order
-from ..data.normalizer import MarketState
+from ..data import MarketState
 
 
 @dataclass
@@ -27,7 +27,14 @@ class Router:
         fill = await self.broker.create_order(order)
         return RouteResult(order=order, fill=fill)
 
-    async def twap(self, symbol: str, current_qty: float, target_qty: float, state: MarketState, slices: int = 3) -> list[RouteResult]:
+    async def twap(
+        self,
+        symbol: str,
+        current_qty: float,
+        target_qty: float,
+        state: MarketState,
+        slices: int = 3,
+    ) -> list[RouteResult]:
         results: list[RouteResult] = []
         step = (target_qty - current_qty) / slices
         qty = current_qty

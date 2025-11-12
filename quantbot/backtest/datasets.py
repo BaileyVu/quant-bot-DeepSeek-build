@@ -8,8 +8,7 @@ from typing import Iterable, List
 
 import numpy as np
 
-from ..data.normalizer import MarketNormalizer
-from ..data.sources import Bar
+from ..data import Bar
 from ..utils.time import utc_now
 
 
