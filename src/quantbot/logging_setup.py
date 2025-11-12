@@ -5,16 +5,22 @@ import json
 import logging
 import sys
 from datetime import datetime, timezone
-from typing import Any, Dict
+from typing import Any, Dict, Mapping
 
 from .config import get_settings
+from .utils.time import utc_now
 
 
 class JsonFormatter(logging.Formatter):
     """Format logs as compact JSON."""
 
+    def __init__(self, base_fields: Mapping[str, Any] | None = None) -> None:
+        super().__init__()
+        self.base_fields = dict(base_fields or {})
+
     def format(self, record: logging.LogRecord) -> str:  # noqa: D401
         payload: Dict[str, Any] = {
+            **self.base_fields,
             "ts": datetime.fromtimestamp(record.created, tz=timezone.utc).isoformat(),
             "level": record.levelname,
             "name": record.name,
@@ -28,16 +34,23 @@ class JsonFormatter(logging.Formatter):
         return json.dumps(payload, separators=(",", ":"))
 
 
-def configure_logging() -> None:
+def configure_logging(run_id: str | None = None) -> str:
     """Configure root logger for the application."""
 
     settings = get_settings()
-    level = getattr(logging, settings.log_level.upper(), logging.INFO)
+    metadata = settings.logging_metadata()
+    resolved_run_id = run_id or settings.logging.run_id or utc_now().strftime("%Y%m%d-%H%M%S")
+    metadata["run_id"] = resolved_run_id
+    level = getattr(logging, settings.logging.level.upper(), logging.INFO)
     handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(JsonFormatter())
+    if settings.logging.structured:
+        handler.setFormatter(JsonFormatter(metadata))
+    else:  # pragma: no cover - optional plain logs
+        handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s"))
     root = logging.getLogger()
     root.setLevel(level)
     root.handlers = [handler]
+    return resolved_run_id
 
 
 def log_extra(**kwargs: Any) -> Dict[str, Any]:

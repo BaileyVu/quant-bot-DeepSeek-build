@@ -5,4 +5,5 @@ data/
 reports/
 .env
 runs/
+results/
 .DS_Store

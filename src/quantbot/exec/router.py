@@ -17,7 +17,13 @@ class Router:
     def __init__(self, broker: Broker) -> None:
         self.broker = broker
 
-    async def route_to_target(self, symbol: str, current_qty: float, target_qty: float, state: MarketState) -> RouteResult | None:
+    async def route_to_target(
+        self,
+        symbol: str,
+        current_qty: float,
+        target_qty: float,
+        state: MarketState,
+    ) -> RouteResult | None:
         delta = target_qty - current_qty
         if abs(delta) < 1e-8:
             return None
@@ -27,7 +33,14 @@ class Router:
         fill = await self.broker.create_order(order)
         return RouteResult(order=order, fill=fill)
 
-    async def twap(self, symbol: str, current_qty: float, target_qty: float, state: MarketState, slices: int = 3) -> list[RouteResult]:
+    async def twap(
+        self,
+        symbol: str,
+        current_qty: float,
+        target_qty: float,
+        state: MarketState,
+        slices: int = 3,
+    ) -> list[RouteResult]:
         results: list[RouteResult] = []
         step = (target_qty - current_qty) / slices
         qty = current_qty

@@ -1,0 +1,38 @@
+environment = "dev"
+
+[runtime]
+mode = "paper"
+exchange = "binance"
+symbols = ["BTCUSDT", "ETHUSDT"]
+bar_interval = "1m"
+
+[risk]
+max_daily_loss = 0.02
+max_drawdown = 0.2
+max_per_order_notional = 15000.0
+max_leverage = 2.0
+max_open_positions = 4
+max_position_notional = 60000.0
+allow_short = true
+allow_long = true
+max_spread_bps = 25.0
+max_price_jump_bps = 300.0
+max_data_lag_seconds = 60
+max_consecutive_errors = 3
+kill_switch_file = "./run.stop"
+
+[data]
+data_directory = "./data/binance"
+cache_directory = "./.cache/binance"
+bar_aggregation = "1m"
+
+[execution]
+maker_fee_bps = 0.02
+taker_fee_bps = 0.05
+max_slippage_bps = 8.0
+funding_interval_minutes = 480
+
+[api.exchanges.binance]
+rest_base = "https://fapi.binance.com"
+ws_base = "wss://fstream.binance.com/ws"
+rate_limit_per_minute = 1200

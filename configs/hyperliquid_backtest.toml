@@ -1,0 +1,39 @@
+environment = "dev"
+
+[runtime]
+mode = "backtest"
+exchange = "hyperliquid"
+symbols = ["BTC"]
+bar_interval = "5m"
+
+[risk]
+max_daily_loss = 0.025
+max_drawdown = 0.3
+max_per_order_notional = 20000.0
+max_leverage = 2.5
+max_open_positions = 3
+max_position_notional = 75000.0
+allow_short = true
+allow_long = true
+max_spread_bps = 40.0
+max_price_jump_bps = 500.0
+max_data_lag_seconds = 120
+max_consecutive_errors = 4
+
+[data]
+data_directory = "./data/hyperliquid"
+cache_directory = "./.cache/hyperliquid"
+start = "2023-02-01T00:00:00Z"
+end = "2023-02-05T00:00:00Z"
+bar_aggregation = "5m"
+
+[execution]
+maker_fee_bps = 0.015
+taker_fee_bps = 0.035
+max_slippage_bps = 10.0
+funding_interval_minutes = 360
+
+[api.exchanges.hyperliquid]
+rest_base = "https://api.hyperliquid.xyz"
+ws_base = "wss://api.hyperliquid.xyz/ws"
+rate_limit_per_minute = 600

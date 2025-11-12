@@ -1,0 +1,37 @@
+environment = "dev"
+
+[runtime]
+mode = "backtest"
+exchange = "binance"
+symbols = ["BTCUSDT"]
+bar_interval = "1m"
+
+[risk]
+max_daily_loss = 0.03
+max_drawdown = 0.25
+max_per_order_notional = 25000.0
+max_leverage = 3.0
+max_open_positions = 3
+max_position_notional = 80000.0
+max_spread_bps = 35.0
+max_price_jump_bps = 400.0
+max_data_lag_seconds = 90
+max_consecutive_errors = 4
+
+[data]
+data_directory = "./data/binance"
+cache_directory = "./.cache/binance"
+start = "2023-01-01T00:00:00Z"
+end = "2023-01-07T00:00:00Z"
+bar_aggregation = "1m"
+
+[execution]
+maker_fee_bps = 0.02
+taker_fee_bps = 0.05
+max_slippage_bps = 5.0
+funding_interval_minutes = 480
+
+[api.exchanges.binance]
+rest_base = "https://fapi.binance.com"
+ws_base = "wss://fstream.binance.com/ws"
+rate_limit_per_minute = 1200

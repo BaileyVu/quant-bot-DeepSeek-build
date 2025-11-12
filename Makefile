@@ -17,13 +17,21 @@ test:
 $(PYTHON_BIN) -m pytest -q
 
 run-backtest:
-$(PYTHON_BIN) -m quantbot.backtest.engine --symbol $$SYMBOL
+    CONFIG_FILE=$${CONFIG:-configs/binance_backtest.toml}; \
+    SYMBOL_FLAG=$${SYMBOL:+--symbol $$SYMBOL}; \
+    $(PYTHON_BIN) -m quantbot.backtest.engine --config $$CONFIG_FILE $$SYMBOL_FLAG
 
 run-paper:
-$(PYTHON_BIN) -m quantbot.live.runner --mode paper --exchange $$EXCHANGE --symbol $$SYMBOL
+    CONFIG_FILE=$${CONFIG:-configs/binance_paper.toml}; \
+    SYMBOL_FLAG=$${SYMBOL:+--symbol $$SYMBOL}; \
+    EXCHANGE_FLAG=$${EXCHANGE:+--exchange $$EXCHANGE}; \
+    $(PYTHON_BIN) -m quantbot.live.runner --mode paper --config $$CONFIG_FILE $$EXCHANGE_FLAG $$SYMBOL_FLAG
 
 run-live:
-$(PYTHON_BIN) -m quantbot.live.runner --mode live --exchange $$EXCHANGE --symbol $$SYMBOL
+    $(PYTHON_BIN) -m quantbot.live.runner --mode live --exchange $$EXCHANGE --symbol $$SYMBOL
+
+run-status:
+    $(PYTHON_BIN) -m uvicorn quantbot.api.status:app --reload --port $${PORT:-8000}
 
 docker-build:
 docker build -t quantbot:latest .

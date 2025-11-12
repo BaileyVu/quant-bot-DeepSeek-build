@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 
-from ..config import get_settings
+from ..config import Settings, get_settings
 
 
 def pct_change(current: float, reference: float) -> float:
@@ -21,8 +21,8 @@ class StopState:
 
 
 class StopManager:
-    def __init__(self, starting_equity: float) -> None:
-        self.settings = get_settings()
+    def __init__(self, starting_equity: float, settings: Settings | None = None) -> None:
+        self.settings = settings or get_settings()
         self.state = StopState(equity_start=starting_equity, day=date.today())
 
     def check_daily(self, current_equity: float) -> bool:
