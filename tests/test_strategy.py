@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from quantbot.data.normalizer import MarketState
+from quantbot.data import MarketState
 from quantbot.strategy.momentum import MomentumStrategy, MomentumConfig
 
 
@@ -15,6 +15,7 @@ def make_state(price: float, prev: float) -> MarketState:
         last=price,
         realized_vol=0.001,
         returns=(price / prev) - 1,
+        volume=1000.0,
     )
 
 

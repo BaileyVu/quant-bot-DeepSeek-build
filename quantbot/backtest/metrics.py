@@ -1,4 +1,5 @@
 """Backtest performance metrics."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -14,6 +15,8 @@ class EquityPoint:
 
 
 def compute_metrics(equity_curve: list[EquityPoint]) -> Dict[str, float]:
+    if not equity_curve:
+        return {"sharpe": 0.0, "max_drawdown": 0.0, "hit_rate": 0.0, "return": 0.0}
     values = np.array([p.equity for p in equity_curve], dtype=float)
     returns = np.diff(values) / values[:-1]
     if len(returns) == 0:

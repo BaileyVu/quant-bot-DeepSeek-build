@@ -1,0 +1,38 @@
+environment = "dev"
+
+[runtime]
+mode = "backtest"
+exchange = "binance"
+primary_symbol = "BTCUSDT"
+symbols = ["BTCUSDT", "ETHUSDT"]
+bar_interval = "1m"
+funding_interval_minutes = 480
+
+[risk]
+max_daily_loss = 0.03
+max_drawdown = 0.25
+max_order_notional = 50000
+max_leverage = 3
+max_open_positions = 5
+per_symbol_notional = { BTCUSDT = 75000, ETHUSDT = 40000 }
+
+[data]
+data_dir = "./data"
+aggregation = "1m"
+preload_days = 0
+
+[api]
+request_timeout = 5.0
+max_retries = 3
+retry_backoff_seconds = 0.5
+rate_limit = { requests_per_minute = 1200, burst = 200 }
+
+[fees]
+maker_bps = 0.02
+taker_bps = 0.05
+
+[logging]
+level = "INFO"
+
+[storage]
+url = "sqlite:///./quantbot.db"

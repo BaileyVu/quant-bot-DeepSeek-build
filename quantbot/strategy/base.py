@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Protocol
 
-from ..data.normalizer import MarketState
+from ..data import MarketState
 
 
 @dataclass
