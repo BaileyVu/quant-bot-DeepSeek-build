@@ -1,0 +1,67 @@
+Final Report for Milestone 3
+Model Selected
+LightGBM Classifier with fixed parameters (small tree, low learning rate, early stopping).
+
+Why This Model
+
+Handles missing values natively (though we drop NaNs).
+Fast training on tabular data.
+Robust to outliers and non-linear relationships.
+Low risk of overfitting with conservative parameters.
+Easy to interpret and reproduce.
+
+Target Definition
+Binary classification: predict whether the close price at time t + horizon will be higher than the close at time t.
+Horizon = 5 minutes (configurable).
+Positive class = 1 (price increases).
+
+Files Created
+
+src/quantos/model/__init__.py
+src/quantos/model/target.py
+src/quantos/model/trainer.py
+src/quantos/model/artifacts.py
+tests/test_model.py
+
+Files Modified
+
+src/quantos/config.py – added ModelConfig class.
+src/quantos/cli.py – added train command.
+pyproject.toml – added lightgbm dependency.
+
+Feature List (exact 13 features from Milestone 2)
+return_1, return_5, return_10, log_return_1, volatility_10, rsi_14, macd_line, macd_signal, macd_histogram, volume_ratio_10, high_low_ratio, close_position_10, above_ma_20
+
+Chronological Split
+
+Training: first 70% of the data.
+Validation: next 15% (used for early stopping).
+Holdout: last 15% (completely isolated; not used in training or validation).
+The split respects time ordering; no shuffling.
+
+Artifacts Produced
+
+model.pkl – trained LightGBM model.
+feature_names.json – ordered list of features used.
+metadata.json – contains split dates, horizon, metrics, model params, random seed, sample counts, etc.
+summary.txt – human-readable summary.
+All stored under data/parquet/models/<symbol>/<version>/.
+
+Leakage Protection
+
+Feature leakage: Features are computed only from past data (Milestone 2 ensures this). No future-derived features.
+Target leakage: Target is computed from close shifted forward by horizon; only the forward shift is used. The target is strictly separated from features during training (we drop rows where target is NaN, but the target is not included in X).
+Preprocessing leakage: No preprocessing statistics are computed from the whole dataset; we only drop NaNs (stateless) and use fixed model parameters.
+Future-data leakage: Chronological split ensures validation and holdout data are never used for training. Early stopping uses validation only, and the final model is evaluated on holdout only after training.
+
+How to Run
+
+Ensure features exist: quantos compute_features --symbol BTCUSDT (after fetching data).
+Train the model: quantos train --symbol BTCUSDT --version v1.0 --horizon 5.
+If --horizon omitted, uses config default (5).
+Run tests: pytest tests/test_model.py -v.
+Location of Saved Model Artifacts
+./data/parquet/models/BTCUSDT/v1.0/ (or similar for other symbols/versions).
+
+Milestone Boundary
+This implementation strictly covers model training only. It does not include backtesting, paper trading, live trading, execution, or any trading strategy logic. No portfolio management, position sizing, or entry/exit decisions are implemented. The model is purely a predictive classifier; its output is not used to make trading decisions in this milestone.

@@ -1,0 +1,64 @@
+# QuantOS V1 Configuration
+symbols:
+  - BTCUSDT
+  - ETHUSDT
+interval: "1m"
+initial_capital: 20.0
+
+data:
+  parquet_dir: "./data/parquet"
+  live_buffer_size: 1000
+
+feature_engine:
+  feature_set_version: "v1.0"
+  features:
+    - return_1
+    - return_5
+    - return_10
+    - log_return_1
+    - volatility_10
+    - rsi_14
+    - macd_line
+    - macd_signal
+    - macd_histogram
+    - volume_ratio_10
+    - high_low_ratio
+    - close_position_10
+    - above_ma_20
+
+binance:
+  base_url: "https://api.binance.com"
+  ws_url: "wss://stream.binance.com:9443/ws"
+  timeout_seconds: 30
+
+logging:
+  level: "INFO"
+  format: "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | {name}:{function}:{line} | {message}"
+  rotation: "1 day"
+  retention: "1 month"
+
+model:
+  target_horizon: 5
+  train_split_ratio: 0.7
+  val_split_ratio: 0.15
+  random_seed: 42
+
+backtest:
+  fee_bps: 10.0
+  slippage_bps: 5.0
+  initial_capital: 20.0
+  signal_threshold: 0.5
+  long_only: true
+  walkforward_windows: 3
+  walkforward_train_ratio: 0.6
+  monte_carlo_iterations: 100
+  monte_carlo_seed: 42
+
+paper:
+  enabled: true
+  initial_capital: 20.0
+  stale_data_timeout_seconds: 120
+  persistence_dir: "./data/paper"
+  max_position_notional: 1000.0
+  max_daily_loss_pct: 10.0
+  max_drawdown_pct: 20.0

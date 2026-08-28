@@ -1,0 +1,77 @@
+Final Report for Milestone 2
+Files Created
+src/quantos/feature_engine/__init__.py
+
+src/quantos/feature_engine/engine.py
+
+src/quantos/feature_engine/storage.py
+
+src/quantos/domain/feature.py (already included in earlier response, but provided again for clarity)
+
+tests/test_feature_engine.py
+
+Files Modified
+src/quantos/domain/__init__.py – added export of FeatureVector
+
+src/quantos/config.py – added FeatureEngineConfig and updated Config model
+
+src/quantos/cli.py – added compute_features command
+
+Feature Inventory (13 features)
+Feature Name	Description
+return_1	1‑period simple return (close / close_prev - 1).
+return_5	5‑period simple return.
+return_10	10‑period simple return.
+log_return_1	1‑period log return (ln(close / close_prev)).
+volatility_10	Rolling standard deviation of 1‑period returns over 10 periods.
+rsi_14	Relative Strength Index (14 periods).
+macd_line	MACD line: 12‑period EMA – 26‑period EMA.
+macd_signal	9‑period EMA of MACD line.
+macd_histogram	MACD line – MACD signal.
+volume_ratio_10	Current volume / average volume over last 10 periods.
+high_low_ratio	(High – Low) / Close – measures intraday range relative to price.
+close_position_10	(Close – low_10) / (high_10 – low_10) – where close lies in the 10‑period range.
+above_ma_20	Binary: 1 if close > 20‑period simple moving average, else 0.
+All features are computed using only past information (rolling windows, no centered data, no future leaks).
+
+Anti-Leakage Design
+Rolling windows use .rolling(window=X) which at time t uses rows t-X+1 through t (past only).
+
+EMAs (MACD) use adjust=False and only historical data; they are causal.
+
+RSI uses rolling means of gains/losses over past 14 periods.
+
+Volume ratio uses a simple rolling mean of past 10 volumes.
+
+Close position uses rolling max/min over past 10 periods.
+
+Above MA uses rolling mean of 20 periods.
+
+No shift(-1) or negative offsets are used anywhere.
+
+Duplicate timestamps are explicitly rejected to prevent ambiguity.
+
+How to Run
+Ensure historical data exists (Milestone 1).
+quantos fetch --symbol BTCUSDT --days 30
+
+Compute features for a symbol and date range:
+
+bash
+quantos compute-features --symbol BTCUSDT --start 2026-08-01T00:00:00 --end 2026-08-22T00:00:00 --version v1.0
+If --start and --end are omitted, the entire available range for that symbol is used.
+
+Run tests (including feature tests):
+
+bash
+pytest -v tests/test_feature_engine.py
+Expected Output
+Feature datasets are stored as Parquet files in:
+
+text
+./data/parquet/features/
+with filenames like BTCUSDT_v1.0.parquet and ETHUSDT_v1.0.parquet.
+Each file contains columns: timestamp, symbol, version, and the 13 features. Missing values (due to insufficient history) are kept as NaN.
+
+Milestone Boundary
+I did not implement any model training, backtesting, paper trading, or live trading. No Alpha Engine, Risk Engine, Execution Engine, or Evaluation Engine logic has been added. The Feature Engine is a self-contained transformation layer that reads candles and outputs features, exactly as specified for Milestone 2.
