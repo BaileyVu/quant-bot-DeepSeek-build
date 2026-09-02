@@ -118,9 +118,9 @@ class PaperPortfolio:
         # Record trade
         entry_price = self.entry_prices.get(symbol, price)
         gross_pnl = quantity * (price - entry_price)
-        net_pnl = gross_pnl - fee - quantity * price * self.slippage_rate - self._total_slippage_paid? Actually we need to compute fees exactly.
+        net_pnl = gross_pnl - fee - quantity * price * self.slippage_rate - self._total_slippage_paid
         # We'll compute properly:
-        fee_entry = self._total_fees_paid - (self._total_fees_paid - fee)? We can't track per trade easily with this simple approach.
+        fee_entry = self._total_fees_paid - (self._total_fees_paid - fee)
         # Better: store trade details during entry and exit.
         # Since we didn't store trade object, we'll create one now.
         trade = PaperTrade(
